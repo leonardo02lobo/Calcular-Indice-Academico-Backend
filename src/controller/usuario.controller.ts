@@ -34,7 +34,14 @@ export const usuarioController = {
                 const comparar:Boolean = await compararPassword(contrasenia,contraseniaHash)
                 
                 if(comparar){
-                    res.status(200).json({"success":true})
+                    res.status(200).json({
+                        "success":true,
+                        "user": {
+                            "id": id,
+                            "nombreUsuario": nombreUsuario,
+                            "carrera": carrera
+                        }
+                    })
                 }
             } else {
                 console.log("No se encontró ningún usuario con ese nombre.");
