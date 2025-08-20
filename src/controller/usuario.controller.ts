@@ -30,6 +30,7 @@ export const usuarioController = {
                 const nombreUsuario = usuario.nombreUsuario;
                 const contraseniaHash = usuario.contrasenia;
                 const carrera = usuario.carrera;
+                const indice = usuario.indiceAcademico;
 
                 const comparar:Boolean = await compararPassword(contrasenia,contraseniaHash)
                 
@@ -39,7 +40,8 @@ export const usuarioController = {
                         "user": {
                             "id": id,
                             "nombreUsuario": nombreUsuario,
-                            "carrera": carrera
+                            "carrera": carrera,
+                            "indiceAcademico": indice
                         }
                     })
                 }
@@ -82,6 +84,32 @@ export const usuarioController = {
                 "message": "Error al procesar los datos",
                 "error": (error as Error).message
             })
+        }
+    },
+    async ActualizarIndiceAcademico(req: Request, res: Response) {
+        try {
+            const { id, indiceAcademico }: Usuario = req.body
+
+            console.log(id, indiceAcademico);
+
+            if (id == null || id == undefined) {
+                res.status(401).json({ "message": "ID de usuario vacía." });
+                return;
+            }
+
+            if (indiceAcademico == null || indiceAcademico == undefined) {
+                res.status(401).json({ "message": "Indice Academico vacio." });
+                return;
+            }
+
+            await pool.query("UPDATE calcularindiceacademicounet.usuario SET indiceAcademico = ? WHERE id = ?", [indiceAcademico, id]);
+            res.status(200).json({
+                "success": true,
+                "message": "Indice Academico actualizado exitosamente",
+            });
+        } catch (error) {
+            console.log((error as Error).message);
+            res.status(500).json({ "message": "Problemas en el servidor" });
         }
     }
 }
